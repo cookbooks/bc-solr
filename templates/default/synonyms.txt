@@ -1,0 +1,18 @@
+# betterplace synonym list
+fundraising event,fundraisingevent,spendenaktion,event,aktion
+projekt,project,hilfsprojekt,aidproject
+kiez,stadtteil
+
+furball,katze,cat
+
+
+# Synonym mappings can be used for spelling correction too
+pixima => pixma
+
+
+# Some synonym groups specific to this example
+GB,gib,gigabyte,gigabytes
+MB,mib,megabyte,megabytes
+Television, Televisions, TV, TVs
+#notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
+#after us won't split it into two words.

@@ -1,0 +1,5 @@
+default[:solr][:log_dir] = "/var/log/solr"
+default[:solr][:home_dir] = "/opt/local/apache-solr"
+default[:solr][:app_name] = "example"
+default[:solr][:download_url] = "http://mirror.netcologne.de/apache.org/lucene/solr/3.6.0/apache-solr-3.6.0.tgz"
+default[:solr][:download_checksum] = "08105de587071583c7b87ee03322fc9d5d28478717441280c3dbc21387e68e1a"

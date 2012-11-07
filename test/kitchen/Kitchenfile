@@ -1,0 +1,3 @@
+cookbook "solr" do
+  runtimes []
+end

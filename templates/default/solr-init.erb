@@ -1,0 +1,54 @@
+#!/bin/bash
+SOLR_DIR="<%= File.join(node[:solr][:home_dir], 'example') %>"
+SOLR_USER="apache"
+JAVA_OPTIONS="-Xmx512m -DSTOP.PORT=8078 -DSTOP.KEY=mustard -Djetty.port=8079 -jar start.jar"
+LOG_FILE=<%= File.join(node[:solr][:log_dir], 'solr.log') %>
+JAVA="/usr/bin/java"
+
+start () {
+    echo -n $"Starting solr: "
+    cd $SOLR_DIR
+    <% if ["redhat", "centos", "suse"].include?(node[:platform]) %>
+    /usr/sbin/daemonize -a -v -u $SOLR_USER -e $LOG_FILE -o $LOG_FILE -c $SOLR_DIR $JAVA $JAVA_OPTIONS
+    <% elsif ["debian", "ubuntu"].include?(node[:platform]) %>
+    /usr/bin/daemon -v -u $SOLR_USER -l $LOG_FILE -o $LOG_FILE -O $LOG_FILE -E $LOG_FILE -D $SOLR_DIR $JAVA -- $JAVA_OPTIONS
+    <% else %>
+    raise "Please implement for this platform"
+    <% end %>
+}
+
+stop () {
+    cd $SOLR_DIR
+    $JAVA $JAVA_OPTIONS --stop
+    echo -n 'Waiting for solrd to die...'
+    counter=0
+    while [ -n "`ps afx | grep java | grep start.jar | awk '{ print $1 }'`" ]; do
+      if [ $counter -gt 5 ]; then
+        echo 'X'
+        kill -6 `ps afx | grep java | grep start.jar | awk '{ print $1 }'`
+      fi
+      let "counter+=1"
+      echo -n '.'
+      sleep 1
+    done
+    echo -e '\nSolr stopped'
+}
+
+restart() {
+    stop
+    start
+}
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    *)
+
+    echo $"Usage: solr {start|stop}"
+    exit 3
+esac
+exit 0
